@@ -17,10 +17,10 @@ func migrateInvoices(r *sqls.SQLiteClient) error {
 	CREATE TABLE IF NOT EXISTS invoices(
 		Id INTEGER PRIMARY KEY AUTOINCREMENT,
         
+		Amount REAL NOT NULL,
 		InvoiceDate TEXT NOT NULL,
 		Items TEXT NOT NULL,
 		PaymentTerms TEXT NOT NULL,
-		Amount REAL NOT NULL,
         CONSTRAINT id_unique_key UNIQUE (Id)
 	)
 	`
@@ -43,8 +43,8 @@ func NewInvoiceDao() (*InvoiceDao, error) {
 }
 
 func (invoiceDao *InvoiceDao) CreateInvoice(m *models.Invoice) (*models.Invoice, error) {
-	insertQuery := "INSERT INTO invoices(InvoiceDate, Items, PaymentTerms, Amount)values(?, ?, ?, ?)"
-	res, err := invoiceDao.sqlClient.DB.Exec(insertQuery, m.InvoiceDate, m.Items, m.PaymentTerms, m.Amount)
+	insertQuery := "INSERT INTO invoices(Amount, InvoiceDate, Items, PaymentTerms)values(?, ?, ?, ?)"
+	res, err := invoiceDao.sqlClient.DB.Exec(insertQuery, m.Amount, m.InvoiceDate, m.Items, m.PaymentTerms)
 	if err != nil {
 		return nil, err
 	}
@@ -74,8 +74,8 @@ func (invoiceDao *InvoiceDao) UpdateInvoice(id int64, m *models.Invoice) (*model
 		return nil, sql.ErrNoRows
 	}
 
-	updateQuery := "UPDATE invoices SET InvoiceDate = ?, Items = ?, PaymentTerms = ?, Amount = ? WHERE Id = ?"
-	res, err := invoiceDao.sqlClient.DB.Exec(updateQuery, m.InvoiceDate, m.Items, m.PaymentTerms, m.Amount, id)
+	updateQuery := "UPDATE invoices SET Amount = ?, InvoiceDate = ?, Items = ?, PaymentTerms = ? WHERE Id = ?"
+	res, err := invoiceDao.sqlClient.DB.Exec(updateQuery, m.Amount, m.InvoiceDate, m.Items, m.PaymentTerms, id)
 	if err != nil {
 		return nil, err
 	}
@@ -121,7 +121,7 @@ func (invoiceDao *InvoiceDao) ListInvoices() ([]*models.Invoice, error) {
 	var invoices []*models.Invoice
 	for rows.Next() {
 		m := models.Invoice{}
-		if err = rows.Scan(&m.Id, &m.InvoiceDate, &m.Items, &m.PaymentTerms, &m.Amount); err != nil {
+		if err = rows.Scan(&m.Id, &m.Amount, &m.InvoiceDate, &m.Items, &m.PaymentTerms); err != nil {
 			return nil, err
 		}
 		invoices = append(invoices, &m)
@@ -138,7 +138,7 @@ func (invoiceDao *InvoiceDao) GetInvoice(id int64) (*models.Invoice, error) {
 	selectQuery := "SELECT * FROM invoices WHERE Id = ?"
 	row := invoiceDao.sqlClient.DB.QueryRow(selectQuery, id)
 	m := models.Invoice{}
-	if err := row.Scan(&m.Id, &m.InvoiceDate, &m.Items, &m.PaymentTerms, &m.Amount); err != nil {
+	if err := row.Scan(&m.Id, &m.Amount, &m.InvoiceDate, &m.Items, &m.PaymentTerms); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, sqls.ErrNotExists
 		}
