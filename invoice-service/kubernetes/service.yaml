@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: invoice-service
+  labels:
+    app: invoice-service
+  name: invoice-service
+spec:
+  ports:
+  
+    - protocol: TCP
+      port: 3500
+      targetPort: 3500
+   
+   
+  selector:
+    app: invoice-service
+  type: ClusterIP
