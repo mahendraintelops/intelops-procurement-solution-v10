@@ -2,42 +2,42 @@
 
 
     
-# Curl commands for REST Server resource Invoice
+# Curl commands for REST Server resource Payment
 # Post
 ```
 curl -X POST -H "Content-Type: application/json" \
--d '{"Amount": 1,"InvoiceDate": "sample string","Items": "sample string","PaymentTerms": "sample string"}' \
-http://localhost:3500/v1/invoices
+-d '{"Amount": 1,"InvoiceNumber": "sample string"}' \
+http://localhost:4565/v1/payments
 ```
 
 # Get
 ```
 curl -X GET -H "Content-Type: application/json" \
-http://localhost:3500/v1/invoices
+http://localhost:4565/v1/payments
 ```
 # Put
 ```
 curl -X PUT -H "Content-Type: application/json" \
--d '{"Id": 123,"Items": "sample string","PaymentTerms": "sample string","Amount": 1,"InvoiceDate": "sample string"}' \
-http://localhost:3500/v1/invoices/123
+-d '{"Id": 123,"Amount": 1,"InvoiceNumber": "sample string"}' \
+http://localhost:4565/v1/payments/123
 ```
 
 # Put
 ### wrong id passed in param
 ```
 curl -X PUT -H "Content-Type: application/json" \
--d '{"Id": 123,"Items": "sample string","PaymentTerms": "sample string","Amount": 1,"InvoiceDate": "sample string"}' \
-http://localhost:3500/v1/invoices/1234
+-d '{"Id": 123,"Amount": 1,"InvoiceNumber": "sample string"}' \
+http://localhost:4565/v1/payments/1234
 ```
-# Get  (retrieve specific Invoice)
+# Get  (retrieve specific Payment)
 ```
 curl -X GET -H "Content-Type: application/json" \
-http://localhost:3500/v1/invoices/123
+http://localhost:4565/v1/payments/123
 ```
 # Delete
 ```
 curl -X DELETE -H "Content-Type: application/json" \
-http://localhost:3500/v1/invoices/123
+http://localhost:4565/v1/payments/123
 ```
     
 
